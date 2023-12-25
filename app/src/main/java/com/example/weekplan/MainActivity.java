@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -20,11 +21,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvToday;
+    private ListView tasksListView;
     private TextView tvYesterday;
     private TextView tvTomorrow;
     private Calendar selectedDate;
@@ -41,6 +45,20 @@ public class MainActivity extends AppCompatActivity {
         applyLanguage(savedLanguage);
 
         setContentView(R.layout.activity_main);
+
+        TextView tvCurrentDate = findViewById(R.id.tvCurrentDate);
+
+        tasksListView = findViewById(R.id.tasksListView);
+
+
+        displayTasks();
+
+        // Форматирование текущей даты и дня недели
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, EEEE", Locale.getDefault());
+        String currentDate = sdf.format(new Date());
+
+        // Установка текста в TextView
+        tvCurrentDate.setText(currentDate);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -86,6 +104,16 @@ public class MainActivity extends AppCompatActivity {
                 updateDateLabels(); // Переключение на следующий день
             }
         });
+    }
+
+    private void displayTasks() {
+        // Получите задачи из базы данных
+        Database dbHelper = new Database(this);
+        List<Task> taskList = dbHelper.getTasks();
+
+        // Создайте адаптер и установите его для ListView
+        TaskAdapter taskAdapter = new TaskAdapter(this, taskList);
+        tasksListView.setAdapter(taskAdapter);
     }
 
 

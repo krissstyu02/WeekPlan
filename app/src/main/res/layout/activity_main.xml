@@ -6,8 +6,6 @@
     android:layout_height="match_parent">
 
         <!-- Верхняя полоса с сегодняшней датой и кнопкой добавления -->
-
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="0dp"
@@ -22,9 +20,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                        <!-- "+" Button -->
-
-                        <!-- Menu Items -->
+                        <TextView
+                            android:id="@+id/tvCurrentDate"
+                            android:layout_width="115dp"
+                            android:layout_height="43dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginBottom="9dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:gravity="center_vertical"
+                            android:onClick="onAddButtonClick"
+                            android:text="dd.MM.yyyy  EEEE"
+                            android:textColor="#3E3C3C"
+                            android:textSize="17sp" />
 
                         <Button
                             android:id="@+id/addButton"
@@ -63,7 +71,7 @@
             android:padding="16dp"
             app:layout_constraintBottom_toTopOf="@id/datesBottomBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintVertical_bias="1.0" />
@@ -85,8 +93,7 @@
                     android:src="?attr/actionModeCloseDrawable"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_gravity="center"
-                    android:onClick="onNextDayClick"
-                    />
+                    android:onClick="onNextDayClick" />
 
                 <!-- Вчера -->
                 <TextView
@@ -121,7 +128,6 @@
                     android:textColor="#FFFFFF"
                     android:gravity="center"/>
 
-
                 <ImageButton
                     android:id="@+id/btnNextDay"
                     android:layout_width="40dp"
@@ -131,7 +137,6 @@
                     android:layout_gravity="center"
                     android:onClick="onNextDayClick"
                     android:rotation="180" />
-
 
         </LinearLayout>
 
