@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import java.text.SimpleDateFormat;
@@ -28,13 +29,16 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTomorrow;
     private Calendar selectedDate;
 
-    private static final String PREFS_FILE_NAME = "your_prefs_file";
+    private static final String PREFS_FILE_NAME = "";
     private static final String SELECTED_LANGUAGE_KEY = "";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String savedLanguage = getAppLanguage();
+        applyLanguage(savedLanguage);
 
         setContentView(R.layout.activity_main);
 
@@ -113,27 +117,53 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString(SELECTED_LANGUAGE_KEY, languageCode).apply();
 
-        // Установка новой локали
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.setLocale(locale);
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        // Применение нового языка
+        applyLanguage(languageCode);
 
-        // Перезагрузка активности для применения изменений
+        // Перезапуск активности (требуется только для некоторых изменений, например, изменения языка)
         Intent refreshIntent = new Intent(this, MainActivity.class);
         refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(refreshIntent);
         finish();
     }
 
+    private void applyLanguage(String languageCode) {
+        // Установка новой локали
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
 
+    private String getAppLanguage() {
+        // Используем язык, сохраненный в SharedPreferences
+        SharedPreferences prefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(SELECTED_LANGUAGE_KEY, "");
+    }
+
+//    private void setLocale(String languageCode) {
+//        // Сохранение выбранного языка в SharedPreferences
+//        SharedPreferences prefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+//        prefs.edit().putString(SELECTED_LANGUAGE_KEY, languageCode).apply();
+//
+//        // Установка новой локали
+//        Locale locale = new Locale(languageCode);
+//        Locale.setDefault(locale);
+//        Configuration config = new Configuration();
+//        config.setLocale(locale);
+//        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+//
+//        // Перезагрузка активности для применения изменений
+//        Intent refreshIntent = new Intent(this, MainActivity.class);
+//        refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        startActivity(refreshIntent);
+//        finish();
+//    }
 
 
     private void updateDateLabels() {
-        // Используем язык, сохраненный в SharedPreferences
-        SharedPreferences prefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
-        String savedLanguage = prefs.getString(SELECTED_LANGUAGE_KEY, "");
+        String savedLanguage = getAppLanguage();
         Locale locale;
 
         if (!savedLanguage.isEmpty()) {
@@ -143,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM", locale);
+
 
         // Установка текста в TextView
         tvToday.setText(sdf.format(selectedDate.getTime()));
