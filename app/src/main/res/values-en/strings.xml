@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">WeekPlan</string>
+    <string name="rus">Russian</string>
+    <string name="eng">English</string>
+    <string name="planName">Name</string>
+    <string name="planDate">Date</string>
+    <string name="planTime">Time</string>
+    <string name="Description">Description</string>
+    <string name="planAdd">Add</string>
+    <string name="add">To-do list updated</string>
+</resources>

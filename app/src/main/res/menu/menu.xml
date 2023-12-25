@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <item
+            android:id="@+id/rus"
+            app:showAsAction="never"
+            android:title="@string/rus" />
+        <item
+            android:id="@+id/eng"
+            android:title="@string/eng"
+            app:showAsAction="never" />
+</menu>
+
