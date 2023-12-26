@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import android.view.Menu;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvYesterday;
     private TextView tvTomorrow;
     private Calendar selectedDate;
+
+    private Calendar selectedDateView;
 
     private static final String PREFS_FILE_NAME = "";
     private static final String SELECTED_LANGUAGE_KEY = "";
@@ -80,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         tvYesterday = findViewById(R.id.tvYesterday);
         tvTomorrow = findViewById(R.id.tvTomorrow);
         selectedDate = Calendar.getInstance();
+        selectedDateView = Calendar.getInstance();
 
         // Установка текста в TextView
         updateDateLabels();
@@ -91,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         btnPreviousDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedDate.add(Calendar.DAY_OF_YEAR, -1);
+                selectedDateView.add(Calendar.DAY_OF_YEAR, -1);
                 updateDateLabels(); // Переключение на предыдущий день
             }
         });
@@ -100,21 +107,92 @@ public class MainActivity extends AppCompatActivity {
         btnNextDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedDate.add(Calendar.DAY_OF_YEAR, 1);
+                selectedDateView.add(Calendar.DAY_OF_YEAR, 1);
                 updateDateLabels(); // Переключение на следующий день
             }
         });
+        tvYesterday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Выбор даты, представленной в tvYesterday
+                String dateString = tvYesterday.getText().toString();
+                selectedDate = convertStringToDate(dateString);
+                Log.d("1", "Selected date: " + dateString);
+                displayTasks(); // Отображение задач для новой даты
+            }
+        });
+
+        tvToday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Выбор даты, представленной в tvToday
+                String dateString = tvToday.getText().toString();
+                selectedDate = convertStringToDate(dateString);
+                Log.d("1", "Selected date: " + dateString);
+                displayTasks(); // Отображение задач для новой даты
+            }
+        });
+
+        tvTomorrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Выбор даты, представленной в tvTomorrow
+                String dateString = tvTomorrow.getText().toString();
+                selectedDate = convertStringToDate(dateString);
+                Log.d("1", "Selected date: " + dateString);
+                displayTasks(); // Отображение задач для новой даты
+            }
+        });
+
+
     }
 
     private void displayTasks() {
-        // Получите задачи из базы данных
+        // Получите задачи из базы данных для выбранной даты
         Database dbHelper = new Database(this);
-        List<Task> taskList = dbHelper.getTasks();
+        Log.d("disp", "Selected date: " + selectedDate);
+        List<Task> taskList = dbHelper.getTasks(selectedDate);
+        // Очистите адаптер перед добавлением новых задач
+        tasksListView.setAdapter(null);
 
         // Создайте адаптер и установите его для ListView
         TaskAdapter taskAdapter = new TaskAdapter(this, taskList);
         tasksListView.setAdapter(taskAdapter);
     }
+
+
+    private Calendar convertStringToDate(String dateString) {
+        String savedLanguage = getAppLanguage();
+        Locale locale;
+
+        if (!savedLanguage.isEmpty()) {
+            locale = new Locale(savedLanguage);
+        } else {
+            locale = Locale.getDefault();
+        }
+
+
+        Log.d("2", "Selected date: " + dateString);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM", locale);
+        Calendar calendar = new GregorianCalendar();  // Используем GregorianCalendar вместо Calendar
+        Log.d("2", "Selected date: " + dateString);
+        try {
+            Date date = sdf.parse(dateString);
+            Log.d("3", "Selected date: " + date);
+            calendar.setTime(date);
+
+            // Получаем текущий год
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+            // Устанавливаем текущий год в объект Calendar
+            calendar.set(Calendar.YEAR, currentYear);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return calendar;
+    }
+
 
 
     @Override
@@ -184,13 +262,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Установка текста в TextView
-        tvToday.setText(sdf.format(selectedDate.getTime()));
+        tvToday.setText(sdf.format(selectedDateView.getTime()));
 
-        Calendar yesterday = (Calendar) selectedDate.clone();
+        Calendar yesterday = (Calendar) selectedDateView.clone();
         yesterday.add(Calendar.DAY_OF_YEAR, -1);
         tvYesterday.setText(sdf.format(yesterday.getTime()));
 
-        Calendar tomorrow = (Calendar) selectedDate.clone();
+        Calendar tomorrow = (Calendar) selectedDateView.clone();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
         tvTomorrow.setText(sdf.format(tomorrow.getTime()));
 

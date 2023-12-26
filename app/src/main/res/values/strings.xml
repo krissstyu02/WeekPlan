@@ -8,4 +8,7 @@
     <string name="Description">Описание</string>
     <string name="planAdd">Добавить</string>
     <string name="add">Список дел обновлен</string>
+    <string name="task_added_successfully">Задача добавлена успешно</string>
+    <string name="error_adding_task">Ошибка при добавлении задачи</string>
+
 </resources>

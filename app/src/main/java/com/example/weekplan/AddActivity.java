@@ -42,9 +42,9 @@ public class AddActivity extends AppCompatActivity {
 
                 // Проверьте успешность операции
                 if (newRowId != -1) {
-                    showToast("Задача добавлена успешно");
+                    showToast(getString(R.string.task_added_successfully));
                 } else {
-                    showToast("Ошибка при добавлении задачи");
+                    showToast(getString(R.string.error_adding_task));
                 }
 
                 // Переход на главную страницу

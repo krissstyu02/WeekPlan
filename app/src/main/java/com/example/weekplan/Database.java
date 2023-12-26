@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,20 +100,28 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Метод для получения данных из базы данных для конкретной даты
     public List<Task> getTasks(Calendar date) {
         List<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+        if (date == null) {
+            db.close();
+            return taskList; // Возможно, стоит вернуть пустой список, если дата равна null
+        }
+
         // Задайте SQL-запрос для выборки данных по дате
         String selectQuery = "SELECT * FROM tasks WHERE date = ?";
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         String formattedDate = sdf.format(date.getTime());
+
 
         Cursor cursor = db.rawQuery(selectQuery, new String[]{formattedDate});
 
-        // Перебираем результаты запроса
-        if (cursor.moveToFirst()) {
+        // Проверяем успешность выполнения запроса
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 // Создаем объект Task для хранения данных
                 Task task = new Task(
@@ -129,11 +138,14 @@ public class Database extends SQLiteOpenHelper {
         }
 
         // Закрываем курсор и базу данных
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         db.close();
 
         return taskList;
     }
+
 
 }
 

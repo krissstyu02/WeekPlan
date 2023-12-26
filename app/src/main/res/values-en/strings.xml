@@ -8,4 +8,6 @@
     <string name="Description">Description</string>
     <string name="planAdd">Add</string>
     <string name="add">To-do list updated</string>
+    <string name="task_added_successfully">Task added successfully</string>
+    <string name="error_adding_task">Error adding task</string>
 </resources>
