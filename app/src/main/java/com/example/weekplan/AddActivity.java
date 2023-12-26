@@ -51,6 +51,14 @@ public class AddActivity extends AppCompatActivity {
                 openMainPage();
             }
         });
+
+        Button btnClose = findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void showToast(String message) {

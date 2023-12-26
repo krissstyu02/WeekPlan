@@ -47,6 +47,14 @@
             android:layout_centerInParent="true"
             android:textSize="18sp"/>
 
+        <!-- Добавленная кнопка "Закрыть" -->
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close"
+            android:textSize="18sp"
+            android:onClick="closePage"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

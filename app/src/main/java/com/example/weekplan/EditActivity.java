@@ -43,6 +43,14 @@ public class EditActivity extends AppCompatActivity {
                 updateTask();
             }
         });
+
+        Button btnClose = findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void loadTaskDetails() {

@@ -11,5 +11,6 @@
     <string name="task_added_successfully">Задача добавлена успешно</string>
     <string name="error_adding_task">Ошибка при добавлении задачи</string>
     <string name="save">Сохранить</string>
+    <string name="close">Закрыть</string>
 
 </resources>
