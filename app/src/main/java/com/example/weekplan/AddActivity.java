@@ -26,7 +26,7 @@ public class AddActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.description);
 
         // Инициализация кнопки и установка слушателя
-        Button btnAddNote = findViewById(R.id.btnAddNote);
+        Button btnAddNote = findViewById(R.id.btnAction);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

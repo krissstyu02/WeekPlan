@@ -27,7 +27,7 @@ public class EditActivity extends AppCompatActivity {
         etDate = findViewById(R.id.etDate);
         etTime = findViewById(R.id.etTime);
         description = findViewById(R.id.description);
-        btnSaveAndClose = findViewById(R.id.btnSaveAndClose);
+        btnSaveAndClose = findViewById(R.id.btnAction);
 
         // Get the taskId from the intent
         taskId = getIntent().getIntExtra("taskId", -1);
