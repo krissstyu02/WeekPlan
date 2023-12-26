@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -170,25 +169,6 @@ public class MainActivity extends AppCompatActivity {
         return prefs.getString(SELECTED_LANGUAGE_KEY, "");
     }
 
-//    private void setLocale(String languageCode) {
-//        // Сохранение выбранного языка в SharedPreferences
-//        SharedPreferences prefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
-//        prefs.edit().putString(SELECTED_LANGUAGE_KEY, languageCode).apply();
-//
-//        // Установка новой локали
-//        Locale locale = new Locale(languageCode);
-//        Locale.setDefault(locale);
-//        Configuration config = new Configuration();
-//        config.setLocale(locale);
-//        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-//
-//        // Перезагрузка активности для применения изменений
-//        Intent refreshIntent = new Intent(this, MainActivity.class);
-//        refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(refreshIntent);
-//        finish();
-//    }
-
 
     private void updateDateLabels() {
         String savedLanguage = getAppLanguage();
@@ -213,6 +193,6 @@ public class MainActivity extends AppCompatActivity {
         Calendar tomorrow = (Calendar) selectedDate.clone();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
         tvTomorrow.setText(sdf.format(tomorrow.getTime()));
-    }
 
+    }
 }

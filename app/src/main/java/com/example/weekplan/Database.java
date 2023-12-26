@@ -9,8 +9,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "your_database_name.db";
@@ -89,6 +92,49 @@ public class Database extends SQLiteOpenHelper {
 
         return taskList;
     }
+
+    public void deleteTask(int taskId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("tasks", "id=?", new String[]{String.valueOf(taskId)});
+        db.close();
+    }
+
+    public List<Task> getTasks(Calendar date) {
+        List<Task> taskList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Задайте SQL-запрос для выборки данных по дате
+        String selectQuery = "SELECT * FROM tasks WHERE date = ?";
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String formattedDate = sdf.format(date.getTime());
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{formattedDate});
+
+        // Перебираем результаты запроса
+        if (cursor.moveToFirst()) {
+            do {
+                // Создаем объект Task для хранения данных
+                Task task = new Task(
+                        cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("title")),
+                        cursor.getString(cursor.getColumnIndex("description")),
+                        cursor.getString(cursor.getColumnIndex("date")),
+                        cursor.getString(cursor.getColumnIndex("time"))
+                );
+
+                // Добавляем задачу в список
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+
+        // Закрываем курсор и базу данных
+        cursor.close();
+        db.close();
+
+        return taskList;
+    }
+
 }
 
 

@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.weekplan.Task;
@@ -18,18 +19,33 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Task task = getItem(position);
+        final Task task = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.simple_list_item_2, parent, false);
         }
 
         TextView text1 = convertView.findViewById(android.R.id.text1);
         TextView text2 = convertView.findViewById(android.R.id.text2);
+        ImageView deleteIcon = convertView.findViewById(R.id.deleteIcon);
 
         if (task != null) {
             text1.setText(task.getTitle());
             text2.setText(task.getDescription());
+
+            // Установка слушателя для удаления задачи
+            deleteIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Удаление из базы данных
+                    Database dbHelper = new Database(getContext());
+                    dbHelper.deleteTask(task.getId());
+
+                    // Удаление из списка и обновление
+                    remove(task);
+                    notifyDataSetChanged();
+                }
+            });
         }
 
         return convertView;
