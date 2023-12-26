@@ -27,11 +27,13 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
         TextView text1 = convertView.findViewById(android.R.id.text1);
         TextView text2 = convertView.findViewById(android.R.id.text2);
+        TextView timeTextView = convertView.findViewById(R.id.timeTextView);
         ImageView deleteIcon = convertView.findViewById(R.id.deleteIcon);
 
         if (task != null) {
             text1.setText(task.getTitle());
             text2.setText(task.getDescription());
+            timeTextView.setText(task.getTime());
 
             // Установка слушателя для удаления задачи
             deleteIcon.setOnClickListener(new View.OnClickListener() {
