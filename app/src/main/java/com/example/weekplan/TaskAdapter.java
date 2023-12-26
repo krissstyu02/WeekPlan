@@ -1,6 +1,8 @@
 package com.example.weekplan;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,9 @@ import android.widget.TextView;
 import java.util.List;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
+
+    private static final int EDIT_ACTIVITY_REQUEST_CODE = 123;
+
 
     public TaskAdapter(Context context, List<Task> tasks) {
         super(context, 0, tasks);
@@ -72,6 +77,26 @@ public class TaskAdapter extends ArrayAdapter<Task> {
             });
         }
 
+        final Task currentTask = getItem(position);
+
+        // Set an OnClickListener for the edit icon
+        ImageView editIcon = convertView.findViewById(R.id.editIcon);
+        editIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle edit action, you may open an edit activity here
+                openEditActivity(currentTask);
+            }
+        });
+
         return convertView;
     }
+
+    private void openEditActivity(Task task) {
+        Intent intent = new Intent(getContext(), EditActivity.class);
+        intent.putExtra("taskId", task.getId()); // You need to define getId() in your Task class
+        ((Activity) getContext()).startActivityForResult(intent, EDIT_ACTIVITY_REQUEST_CODE);
+    }
+
+
 }

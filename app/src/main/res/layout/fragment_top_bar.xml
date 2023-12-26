@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Текстовое поле для текущей даты -->
+    <TextView
+        android:id="@+id/tvCurrentDate"
+        android:layout_width="115dp"
+        android:layout_height="43dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="9dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:text="dd.MM.yyyy  EEEE"
+        android:textColor="#3E3C3C"
+        android:textSize="17sp" />
+
+    <!-- Кнопка добавления -->
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="286dp"
+        android:background="@android:color/transparent"
+        android:text="+"
+        android:textColor="#3E3C3C"
+        android:textSize="29sp" />
+
+    <!-- Меню (если у вас там были какие-то элементы меню) -->
+
+</RelativeLayout>

@@ -60,40 +60,6 @@ public class Database extends SQLiteOpenHelper {
         return newRowId;
     }
 
-    // Метод для получения данных из базы данных
-    public List<Task> getTasks() {
-        List<Task> taskList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Задайте SQL-запрос для выборки данных
-        String selectQuery = "SELECT * FROM tasks";
-
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // Перебираем результаты запроса
-        if (cursor.moveToFirst()) {
-            do {
-                // Создаем объект Task для хранения данных
-                Task task = new Task(
-                        cursor.getInt(cursor.getColumnIndex("id")),
-                        cursor.getString(cursor.getColumnIndex("title")),
-                        cursor.getString(cursor.getColumnIndex("description")),
-                        cursor.getString(cursor.getColumnIndex("date")),
-                        cursor.getString(cursor.getColumnIndex("time"))
-                );
-
-                // Добавляем задачу в список
-                taskList.add(task);
-            } while (cursor.moveToNext());
-        }
-
-        // Закрываем курсор и базу данных
-        cursor.close();
-        db.close();
-
-        return taskList;
-    }
-
     public void deleteTask(int taskId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("tasks", "id=?", new String[]{String.valueOf(taskId)});
@@ -145,6 +111,49 @@ public class Database extends SQLiteOpenHelper {
 
         return taskList;
     }
+
+    public void updateTask(int taskId, String title, String description, String date, String time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("title", title);
+        values.put("description", description);
+        values.put("date", date);
+        values.put("time", time);
+
+        db.update("tasks", values, "id=?", new String[]{String.valueOf(taskId)});
+        db.close();
+    }
+
+    public Task getTaskById(int taskId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Task task = null;
+
+        Cursor cursor = db.query(
+                "tasks",
+                new String[]{"id", "title", "description", "date", "time"},
+                "id=?",
+                new String[]{String.valueOf(taskId)},
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            task = new Task(
+                    cursor.getInt(cursor.getColumnIndex("id")),
+                    cursor.getString(cursor.getColumnIndex("title")),
+                    cursor.getString(cursor.getColumnIndex("description")),
+                    cursor.getString(cursor.getColumnIndex("date")),
+                    cursor.getString(cursor.getColumnIndex("time"))
+            );
+            cursor.close();
+        }
+
+        db.close();
+
+        return task;
+    }
+
 
 
 }

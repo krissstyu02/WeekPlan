@@ -25,14 +25,23 @@
                 <!-- Название -->
                 <TextView
                     android:id="@android:id/text1"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textColor="#000000"
+                    android:layout_weight="6"
                     android:paddingStart="8dp"
-                    android:paddingEnd="8dp"/>
+                    android:paddingEnd="8dp"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
 
+                <ImageView
+                    android:id="@+id/editIcon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:src="@android:drawable/ic_menu_edit" />
         </LinearLayout>
+
 
         <!-- Описание -->
         <TextView

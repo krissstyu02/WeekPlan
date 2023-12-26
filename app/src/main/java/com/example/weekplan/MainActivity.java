@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.ParseException;
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String PREFS_FILE_NAME = "";
     private static final String SELECTED_LANGUAGE_KEY = "";
+
+    private static final int EDIT_ACTIVITY_REQUEST_CODE = 123;
+
 
 
     @Override
@@ -272,5 +276,14 @@ public class MainActivity extends AppCompatActivity {
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
         tvTomorrow.setText(sdf.format(tomorrow.getTime()));
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Результат из EditActivity: задача была обновлена, обновим список задач
+            displayTasks();
+        }
     }
 }
