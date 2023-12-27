@@ -33,7 +33,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvToday;
-    private ListView tasksListView;
+//    private ListView tasksListView;
     private TextView tvYesterday;
     private TextView tvTomorrow;
     private Calendar selectedDate;
@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String SELECTED_LANGUAGE_KEY = "";
 
     private static final int EDIT_ACTIVITY_REQUEST_CODE = 123;
+
+    private FragmentList taskListFragment;
 
 
 
@@ -56,9 +58,19 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        taskListFragment = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.fragment1);
+
+        if (taskListFragment == null) {
+            // Фрагмент еще не добавлен в макет, создадим и добавим его программно
+            taskListFragment = new FragmentList();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment1, taskListFragment)
+                    .commit();
+        }
+
         TextView tvCurrentDate = findViewById(R.id.tvCurrentDate);
 
-        tasksListView = findViewById(R.id.tasksListView);
+//        tasksListView = findViewById(R.id.tasksListView);
 
 
         displayTasks();
@@ -154,15 +166,20 @@ public class MainActivity extends AppCompatActivity {
     private void displayTasks() {
         // Получите задачи из базы данных для выбранной даты
         Database dbHelper = new Database(this);
-        Log.d("disp", "Selected date: " + selectedDate);
         List<Task> taskList = dbHelper.getTasks(selectedDate);
-        // Очистите адаптер перед добавлением новых задач
-        tasksListView.setAdapter(null);
 
-        // Создайте адаптер и установите его для ListView
-        TaskAdapter taskAdapter = new TaskAdapter(this, taskList);
-        tasksListView.setAdapter(taskAdapter);
+        Log.d("вызывали метод", "Selected date: " + taskList);
+
+        // Получите ссылку на ваш фрагмент
+        FragmentList taskListFragment = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.fragment1);
+
+        // Вызовите метод фрагмента для обновления данных
+        if (taskListFragment != null) {
+            taskListFragment.updateTasks(taskList);
+            Log.d("вызывали метод", "Selected date: ");
+        }
     }
+
 
 
     private Calendar convertStringToDate(String dateString) {

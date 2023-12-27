@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
     public TaskAdapter(Context context, List<Task> tasks) {
         super(context, 0, tasks);
+        Log.d("adapter", "Number of tasks: " + tasks.size());
     }
 
     @Override
@@ -42,11 +44,14 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         SharedPreferences prefs = getContext().getSharedPreferences("checkbox_state", Context.MODE_PRIVATE);
         boolean isChecked = prefs.getBoolean("task_" + task.getId(), false);
         checkBox.setChecked(isChecked);
+        Log.d("адаптер", "Selected date: " );
 
         if (task != null) {
             text1.setText(task.getTitle());
             text2.setText(task.getDescription());
             timeTextView.setText(task.getTime()); // Устанавливаем время
+
+            Log.d("вызывали метод", "Selected date: " + task);
 
             // Установка слушателя для удаления задачи
             deleteIcon.setOnClickListener(new View.OnClickListener() {
