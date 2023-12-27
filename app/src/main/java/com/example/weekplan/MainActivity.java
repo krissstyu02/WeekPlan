@@ -33,7 +33,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvToday;
-//    private ListView tasksListView;
+
     private TextView tvYesterday;
     private TextView tvTomorrow;
     private Calendar selectedDate;
@@ -70,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tvCurrentDate = findViewById(R.id.tvCurrentDate);
 
-//        tasksListView = findViewById(R.id.tasksListView);
+        selectedDate = Calendar.getInstance();
 
-
+        // Отображаем задачи на сегодня
         displayTasks();
+
 
         // Форматирование текущей даты и дня недели
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, EEEE", Locale.getDefault());
