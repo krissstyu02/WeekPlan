@@ -14,15 +14,23 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
 
     private static final int EDIT_ACTIVITY_REQUEST_CODE = 123;
+    private List<Task> tasks;
 
 
     public TaskAdapter(Context context, List<Task> tasks) {
         super(context, 0, tasks);
+        this.tasks = tasks;
         Log.d("adapter", "Number of tasks: " + tasks.size());
     }
 
@@ -102,6 +110,34 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         intent.putExtra("taskId", task.getId()); // You need to define getId() in your Task class
         ((Activity) getContext()).startActivityForResult(intent, EDIT_ACTIVITY_REQUEST_CODE);
     }
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void sortTasksByTime() {
+        Collections.sort(getTasks(), new Comparator<Task>() {
+            @Override
+            public int compare(Task task1, Task task2) {
+                // Ваша логика сравнения времени задач, например, с использованием SimpleDateFormat
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                try {
+                    Date time1 = sdf.parse(task1.getTime());
+                    Date time2 = sdf.parse(task2.getTime());
+
+                    // Сравнение времени
+                    return time1.compareTo(time2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                return 0;
+            }
+        });
+
+        notifyDataSetChanged();
+    }
+
 
 
 }

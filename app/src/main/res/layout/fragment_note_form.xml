@@ -22,8 +22,7 @@
             android:id="@+id/etDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/planDate"
-            android:inputType="date"/>
+            android:hint="@string/planDate" />
 
         <EditText
             android:id="@+id/etTime"

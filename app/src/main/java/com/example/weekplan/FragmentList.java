@@ -33,6 +33,9 @@ public class FragmentList extends Fragment {
 
         // Создайте адаптер и установите его для ListView
         TaskAdapter taskAdapter = new TaskAdapter(requireContext(), taskList);
+
+        taskAdapter.sortTasksByTime();
+
         tasksListView.setAdapter(taskAdapter);
     }
 
