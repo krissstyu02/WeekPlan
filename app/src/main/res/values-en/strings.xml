@@ -12,4 +12,5 @@
     <string name="error_adding_task">Error adding task</string>
     <string name="save">Save</string>
     <string name="close">Close</string>
+    <string name="edit">Task saved successfully</string>
 </resources>

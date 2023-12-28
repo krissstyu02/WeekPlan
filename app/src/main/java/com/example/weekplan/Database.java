@@ -18,36 +18,31 @@ import java.util.Locale;
 
 public class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "your_database_name.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2; // Увеличиваем версию базы данных
 
-    // Конструктор
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Вызывается при создании базы данных
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Создайте таблицу для хранения данных
         String createTableQuery = "CREATE TABLE tasks ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "title TEXT,"
                 + "description TEXT,"
                 + "date TEXT,"
-                + "time TEXT)";
+                + "time TEXT,"
+                + "isChecked INTEGER DEFAULT 0)"; // Добавляем столбец isChecked
         db.execSQL(createTableQuery);
     }
 
     // Вызывается при обновлении базы данных (изменение версии)
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Обновите структуру базы данных при необходимости
         db.execSQL("DROP TABLE IF EXISTS tasks");
         onCreate(db);
     }
 
-    // Добавить методы для выполнения операций с базой данных, такие как вставка, обновление, выборка и удаление
-    // Например:
     public long addTask(String title, String description, String date, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -58,6 +53,15 @@ public class Database extends SQLiteOpenHelper {
         long newRowId = db.insert("tasks", null, values);
         db.close();
         return newRowId;
+    }
+
+    // Добавляем метод для обновления состояния isChecked
+    public void updateTaskIsChecked(int taskId, boolean isChecked) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("isChecked", isChecked ? 1 : 0);
+        db.update("tasks", values, "id=?", new String[]{String.valueOf(taskId)});
+        db.close();
     }
 
     public void deleteTask(int taskId) {
@@ -79,10 +83,8 @@ public class Database extends SQLiteOpenHelper {
         // Задайте SQL-запрос для выборки данных по дате
         String selectQuery = "SELECT * FROM tasks WHERE date = ?";
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         String formattedDate = sdf.format(date.getTime());
-
 
         Cursor cursor = db.rawQuery(selectQuery, new String[]{formattedDate});
 
@@ -95,7 +97,8 @@ public class Database extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex("title")),
                         cursor.getString(cursor.getColumnIndex("description")),
                         cursor.getString(cursor.getColumnIndex("date")),
-                        cursor.getString(cursor.getColumnIndex("time"))
+                        cursor.getString(cursor.getColumnIndex("time")),
+                        cursor.getInt(cursor.getColumnIndex("isChecked")) == 1
                 );
 
                 // Добавляем задачу в список
@@ -130,7 +133,7 @@ public class Database extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(
                 "tasks",
-                new String[]{"id", "title", "description", "date", "time"},
+                new String[]{"id", "title", "description", "date", "time", "isChecked"},
                 "id=?",
                 new String[]{String.valueOf(taskId)},
                 null,
@@ -144,7 +147,8 @@ public class Database extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex("title")),
                     cursor.getString(cursor.getColumnIndex("description")),
                     cursor.getString(cursor.getColumnIndex("date")),
-                    cursor.getString(cursor.getColumnIndex("time"))
+                    cursor.getString(cursor.getColumnIndex("time")),
+                    cursor.getInt(cursor.getColumnIndex("isChecked")) == 1
             );
             cursor.close();
         }
@@ -153,9 +157,6 @@ public class Database extends SQLiteOpenHelper {
 
         return task;
     }
-
-
-
 }
 
 

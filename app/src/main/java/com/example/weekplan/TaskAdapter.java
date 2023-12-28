@@ -26,12 +26,12 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
     private static final int EDIT_ACTIVITY_REQUEST_CODE = 123;
     private List<Task> tasks;
-
+    private SharedPreferences prefs;
 
     public TaskAdapter(Context context, List<Task> tasks) {
         super(context, 0, tasks);
         this.tasks = tasks;
-        Log.d("adapter", "Number of tasks: " + tasks.size());
+        prefs = context.getSharedPreferences("checkbox_state", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -48,44 +48,30 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         TextView timeTextView = convertView.findViewById(R.id.timeTextView);
         ImageView deleteIcon = convertView.findViewById(R.id.deleteIcon);
 
-        // Загрузка состояния чекбокса из SharedPreferences
-        SharedPreferences prefs = getContext().getSharedPreferences("checkbox_state", Context.MODE_PRIVATE);
-        boolean isChecked = prefs.getBoolean("task_" + task.getId(), false);
-        checkBox.setChecked(isChecked);
-        Log.d("адаптер", "Selected date: " );
+        // Загрузка состояния чекбокса из базы данных
+        checkBox.setChecked(task.isChecked());
 
         if (task != null) {
             text1.setText(task.getTitle());
             text2.setText(task.getDescription());
-            timeTextView.setText(task.getTime()); // Устанавливаем время
+            timeTextView.setText(task.getTime());
 
-            Log.d("вызывали метод", "Selected date: " + task);
-
-            // Установка слушателя для удаления задачи
             deleteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Удаление из базы данных
                     Database dbHelper = new Database(getContext());
                     dbHelper.deleteTask(task.getId());
-
-                    // Удаление из списка и обновление
                     remove(task);
                     notifyDataSetChanged();
                 }
             });
 
-            // Установка слушателя для изменения состояния чекбокса
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // Сохранение состояния чекбокса в SharedPreferences
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putBoolean("task_" + task.getId(), isChecked);
-                    editor.apply();
-
-                    // Обработка изменения состояния чекбокса
-                    // Можете добавить здесь код для обновления состояния задачи в базе данных
+                    // Обновляем состояние isChecked в базе данных
+                    Database dbHelper = new Database(getContext());
+                    dbHelper.updateTaskIsChecked(task.getId(), isChecked);
                 }
             });
         }
@@ -97,7 +83,6 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle edit action, you may open an edit activity here
                 openEditActivity(currentTask);
             }
         });
@@ -107,9 +92,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
     private void openEditActivity(Task task) {
         Intent intent = new Intent(getContext(), EditActivity.class);
-        intent.putExtra("taskId", task.getId()); // You need to define getId() in your Task class
+        intent.putExtra("taskId", task.getId());
         ((Activity) getContext()).startActivityForResult(intent, EDIT_ACTIVITY_REQUEST_CODE);
     }
+
     public List<Task> getTasks() {
         return tasks;
     }
@@ -118,14 +104,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         Collections.sort(getTasks(), new Comparator<Task>() {
             @Override
             public int compare(Task task1, Task task2) {
-                // Ваша логика сравнения времени задач, например, с использованием SimpleDateFormat
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
                 try {
                     Date time1 = sdf.parse(task1.getTime());
                     Date time2 = sdf.parse(task2.getTime());
-
-                    // Сравнение времени
                     return time1.compareTo(time2);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -137,7 +120,5 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
         notifyDataSetChanged();
     }
-
-
-
 }
+

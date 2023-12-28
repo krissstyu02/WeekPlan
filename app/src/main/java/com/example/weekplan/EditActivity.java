@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-// EditActivity class
+// Класс EditActivity
 public class EditActivity extends AppCompatActivity {
     private EditText etNoteName;
     private EditText etDate;
@@ -15,35 +16,36 @@ public class EditActivity extends AppCompatActivity {
     private EditText description;
     private Button btnSaveAndClose;
 
-    private int taskId; // Task ID to be edited
+    private int taskId; // Идентификатор задачи для редактирования
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_page);
 
-        // Initialize your UI components
+        // Инициализация компонентов пользовательского интерфейса
         etNoteName = findViewById(R.id.etNoteName);
         etDate = findViewById(R.id.etDate);
         etTime = findViewById(R.id.etTime);
         description = findViewById(R.id.description);
         btnSaveAndClose = findViewById(R.id.btnAction);
 
-        // Get the taskId from the intent
+        // Получение идентификатора задачи из интента
         taskId = getIntent().getIntExtra("taskId", -1);
 
-        // Load the existing task details based on taskId and populate the UI fields
+        // Загрузка существующих данных о задаче по идентификатору и заполнение полей пользовательского интерфейса
         loadTaskDetails();
 
-        // Set an OnClickListener for the save button
+        // Назначение слушателя на кнопку сохранения
         btnSaveAndClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Handle save action, update the existing task with new details
+                // Обработка действия сохранения, обновление существующей задачи новыми данными
                 updateTask();
             }
         });
 
+        // Настройка кнопки закрытия
         Button btnClose = findViewById(R.id.btnClose);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,12 +55,13 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
+    // Метод для загрузки деталей задачи
     private void loadTaskDetails() {
-        // Use taskId to fetch existing task details from the database
+        // Использование идентификатора задачи для получения существующих данных из базы данных
         Database dbHelper = new Database(this);
         Task existingTask = dbHelper.getTaskById(taskId);
 
-        // Populate UI fields with existing details
+        // Заполнение полей пользовательского интерфейса существующими данными
         if (existingTask != null) {
             etNoteName.setText(existingTask.getTitle());
             etDate.setText(existingTask.getDate());
@@ -67,22 +70,29 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-
+    // Метод для обновления задачи
     private void updateTask() {
-        // Get the new values from the UI fields
+        // Получение новых значений из полей пользовательского интерфейса
         String newNoteName = etNoteName.getText().toString();
         String newDate = etDate.getText().toString();
         String newTime = etTime.getText().toString();
         String newDescription = description.getText().toString();
 
-        // Update the existing task in the database
+        // Обновление существующей задачи в базе данных
         Database dbHelper = new Database(this);
         dbHelper.updateTask(taskId, newNoteName, newDescription, newDate, newTime);
 
+        // Показ уведомления об изменении записи
+        showToast(getString(R.string.edit));
+
         setResult(RESULT_OK);
 
-        // Close the EditActivity
+        // Закрытие EditActivity
         finish();
     }
-}
 
+    // Метод для отображения всплывающего уведомления
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+}
